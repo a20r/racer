@@ -21,12 +21,12 @@ class LiveUncertaintyTests(unittest.TestCase):
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
-        self.x_step = 2
-        self.y_step = 2
+        self.x_step = 1
+        self.y_step = 1
         self.x_min = 0
         self.y_min = 0
-        self.x_max = 100
-        self.y_max = 100
+        self.x_max = 50
+        self.y_max = 50
         self.x = np.arange(self.x_min, self.x_max, self.x_step)
         self.y = np.arange(self.y_min, self.y_max, self.y_step)
         self.X, self.Y = np.meshgrid(self.x, self.y)
@@ -34,11 +34,11 @@ class LiveUncertaintyTests(unittest.TestCase):
         self.ax.set_xlim(self.x_min, self.x_max)
         self.ax.set_ylim(self.y_min, self.y_max)
         self.ag = racer.Agent(
-            rm.SinModel(10, 1, math.pi / 2, 50), rm.SinModel(10, 1, 1, 50)
+            rm.SinModel(10, 1, math.pi / 2, 25), rm.SinModel(10, 1, 1, 25)
         )
 
         self.num_iter = 1000
-        self.how_far = 2
+        self.how_far = 1
 
         self.start_time = time.time()
 
