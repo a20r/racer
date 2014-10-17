@@ -11,7 +11,6 @@ from matplotlib import cm
 import racer
 import racer.model as rm
 import time
-import math
 
 
 class LiveUncertaintyTests(unittest.TestCase):
@@ -21,8 +20,8 @@ class LiveUncertaintyTests(unittest.TestCase):
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
-        self.x_step = 1
-        self.y_step = 1
+        self.x_step = 1.5
+        self.y_step = 1.5
         self.x_min = 0
         self.y_min = 0
         self.x_max = 50
@@ -34,7 +33,7 @@ class LiveUncertaintyTests(unittest.TestCase):
         self.ax.set_xlim(self.x_min, self.x_max)
         self.ax.set_ylim(self.y_min, self.y_max)
         self.ag = racer.Agent(
-            rm.SinModel(10, 1, math.pi / 2, 25), rm.SinModel(10, 1, 1, 25)
+            rm.SinModel(10, 2, 1, 25), rm.SinModel(10, 1, 1, 25)
         )
 
         self.num_iter = 1000
@@ -59,12 +58,13 @@ class LiveUncertaintyTests(unittest.TestCase):
 
         zs = self.get_zs()
         Z = zs.reshape(self.X.shape)
-        self.graph = self.ax.pcolormesh(self.X, self.Y, Z, cmap=cm.jet)
+        self.graph = self.ax.pcolormesh(self.X, self.Y, Z,
+                                        cmap=cm.jet, shading='gouraud')
         plt.draw()
         plt.pause(0.0001)
 
     def test_normal(self):
-        time_step = 0.5
+        time_step = 0.2
         t = 0
         for i in xrange(self.num_iter):
             try:
@@ -76,6 +76,7 @@ class LiveUncertaintyTests(unittest.TestCase):
 
             except Exception as e:
                 print e
+
 
 if __name__ == "__main__":
     unittest.main()
