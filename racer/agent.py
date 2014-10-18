@@ -33,3 +33,34 @@ class Agent(object):
             t += self.delta_t
 
         return prob_sum / num_samples
+
+    def get_pdf(self, t_0, t_m):
+        assert t_0 < t_m
+        return lambda x, y: self.get_probability(x, y, t_0, t_m)
+
+
+def get_probability(x, y, t_0, t_m, *agents):
+    assert len(agents) > 0
+    assert t_0 < t_m
+    sum_prob = 0.0
+    for a in agents:
+        sum_prob += a.get_probability(x, y, t_0, t_m)
+
+    return sum_prob / len(agents)
+
+
+def get_pdf(t_0, t_m, *agents):
+    assert len(agents) > 0
+    assert t_0 < t_m
+    a_list = list()
+    for a in agents:
+        a_list.append(a.get_pdf(t_0, t_m))
+
+    def __get_pdf(x, y):
+        sum_prob = 0.0
+        for pdf in a_list:
+            sum_prob += pdf(x, y)
+
+        return sum_prob / len(agents)
+
+    return __get_pdf

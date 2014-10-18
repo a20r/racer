@@ -20,8 +20,8 @@ class LiveUncertaintyTests(unittest.TestCase):
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
-        self.x_step = 1.5
-        self.y_step = 1.5
+        self.x_step = 2
+        self.y_step = 2
         self.x_min = 0
         self.y_min = 0
         self.x_max = 50
@@ -33,7 +33,10 @@ class LiveUncertaintyTests(unittest.TestCase):
         self.ax.set_xlim(self.x_min, self.x_max)
         self.ax.set_ylim(self.y_min, self.y_max)
         self.ag = racer.Agent(
-            rm.SinModel(10, 2, 1, 25), rm.SinModel(10, 1, 1, 25)
+            rm.SinModel(20, 2, 1, 25), rm.LinearModel(0, 35)
+        )
+        self.ag_2 = racer.Agent(
+            rm.SinModel(-20, 2, 1, 25), rm.LinearModel(0, 15)
         )
 
         self.num_iter = 1000
@@ -44,7 +47,7 @@ class LiveUncertaintyTests(unittest.TestCase):
     def get_zs(self):
         zs = np.array(
             [
-                self.cdf(x_i, y_i)
+                self.pdf(x_i, y_i)
                 for x_i, y_i in zip(np.ravel(self.X), np.ravel(self.Y))
             ]
         )
@@ -58,25 +61,17 @@ class LiveUncertaintyTests(unittest.TestCase):
 
         zs = self.get_zs()
         Z = zs.reshape(self.X.shape)
-        self.graph = self.ax.pcolormesh(self.X, self.Y, Z,
-                                        cmap=cm.jet, shading='gouraud')
+        self.graph = self.ax.pcolormesh(self.X, self.Y, Z, cmap=cm.jet)
         plt.draw()
-        plt.pause(0.0001)
+        plt.pause(0.0000001)
 
     def test_normal(self):
         time_step = 0.2
         t = 0
         for i in xrange(self.num_iter):
-            try:
-                self.cdf = lambda x, y: self.ag.get_probability(
-                    x, y, t, t + self.how_far
-                )
-                t += time_step
-                self.update()
-
-            except Exception as e:
-                print e
-
+            self.pdf = racer.get_pdf(t, t + self.how_far, self.ag, self.ag_2)
+            t += time_step
+            self.update()
 
 if __name__ == "__main__":
     unittest.main()
