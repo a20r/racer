@@ -58,6 +58,12 @@ class Point(object):
     def __hash__(self):
         return hash(str(self))
 
+    def __add__(self, other):
+        return Point(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def __mult__(self, scalar):
+        return Point(scalar * self.x, scalar * self.y, scalar * self.z)
+
     def __eq__(self, val):
         try:
             return val.x == self.x and val.y == self.y and val.z == self.z
