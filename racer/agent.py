@@ -9,7 +9,7 @@ class Agent(object):
         self.model_x = model_x
         self.model_y = model_y
         self.delta_t = 0.1
-        self.k = 3
+        self.k = 10
 
     def get_normal_dist(self, X, std):
         coeff = 1.0 / (std * math.sqrt(2 * math.pi))
