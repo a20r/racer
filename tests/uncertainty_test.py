@@ -4,19 +4,17 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-import unittest
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import racer
 import racer.model as rm
-import racer.pf as pf
 import time
 
 
-class LiveUncertaintyTests(unittest.TestCase):
+class LiveUncertaintyTests(object):
 
-    def setUp(self):
+    def __init__(self):
         self.fig = plt.figure("Uncertainty Map")
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
@@ -46,7 +44,6 @@ class LiveUncertaintyTests(unittest.TestCase):
         self.start_time = time.time()
         self.start = racer.Point(25, 0)
         self.goal = racer.Point(25, 50)
-        self.plnr = pf.Planner()
 
     def get_zs(self):
         zs = np.array(
@@ -69,16 +66,15 @@ class LiveUncertaintyTests(unittest.TestCase):
         plt.draw()
         plt.pause(0.0000001)
 
-    def test_normal(self):
+    def run(self):
         time_step = 0.2
         t = 0
         for i in xrange(self.num_iter):
             self.pdf = racer.get_pdf(t, t + self.how_far, self.ag, self.ag_2)
-            vel = self.plnr.plan(self.start, self.goal, self.pdf)
-            self.start = self.start + vel
-            print self.start.x, self.start.y
             t += time_step
             self.update()
 
+
 if __name__ == "__main__":
-    unittest.main()
+    lut = LiveUncertaintyTests()
+    lut.run()

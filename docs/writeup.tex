@@ -1,0 +1,96 @@
+
+\title{Generating Safe Paths in Cluttered Dynamic
+Environments by Predicting the Movements of Obstacles}
+
+\date{\today}
+
+\author{120013913}
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amssymb}
+\usepackage[pdftex]{graphicx}
+% \usepackage{relsize}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{fancyvrb}
+\usepackage[noend]{algorithmic}
+
+\usepackage{url}
+
+\usepackage[margin=1.570796in]{geometry}
+
+\floatstyle{ruled} \newfloat{program}{thp}{lop} \floatname{program}{Structure}
+\newcommand{\Normal}[3]{\mathcal{N}(#1, #2, #3)}
+\newcommand{\Acronym}[1]{\ensuremath{{\small{\texttt{#1}}}}}
+\newcommand{\True}{\Constant{true}}
+\newcommand{\Symbol}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\Function}[1]{\ensuremath{{\small \textsc{#1}}}}
+\newcommand{\Constant}[1]{\ensuremath{\small{\texttt{#1}}}}
+\newcommand{\Var}[1]{\ensuremath{{\small{\textsl{#1}}}}}
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{arg}\,\operatorname{min}}\;}
+\newcommand{\grad}[1]{\underset{#1}{\operatorname{\Function{GradientDecent}}}\;}
+
+\begin{document}
+
+% \maketitle
+
+\section{Problem Description}
+
+A pivotal problem in robotics is to generate collision free paths through
+environment that allow a robot to move from an initial configuration to a goal
+configuration without colliding with any obstacle. In many cases, these
+environments will have dynamic obstacles that do not stay in the same position.
+Using machine learning algorithms, it is possible to predict the future
+positions of the obstacles by observing the obstacles' past positions. The
+machine learning algorithms provide a probability distribution of where
+obstacles are going to be within a certain amount of time into the future.  The
+amount of time within the future is provided as an argument to the machine
+learning algorithm. More formally, the machine learning algorithm,
+
+$$P: \mathcal{O} \times \mathbb{R} \rightarrow (\mathbb{R}^2 \rightarrow [0,
+1])$$
+
+Where $\mathcal{O}$ is a set of all the obstacles and their past positions.
+What is returned from $P$ is a function that given an $x, y$ position it will
+return a probability of a obstacle being at $x, y$ within a certain amount of
+time in the future. Using the function that is returned, we hypothesize that it
+is possible to generate safe paths through cluttered dynamic environments where
+there is a measurable uncertainty of an obstacle moving off its current path.
+
+\section{Proposed Approach}
+
+The current state of the art for planning around moving obstacles where the
+trajectories are known consists of planning in space-time and by waiting until
+the current path is clear, and afterwards moving towards the goal. The first
+approach lacks the ability to deal elegantly with uncertainty in the
+trajectories of the moving obstacles. The second approach generates suboptimal
+paths in terms of the amount of time it takes to move from the initial
+configuration to the goal configuration. Our approach will elegantly deal with
+the uncertainty in the obstacles' trajectories whilst generating paths that
+will lead the robot to the goal without waiting unless absolutely necessary. We
+plan to do this using a Probabilistic Roadmap that will sample points in space
+and time $(x, y, t)$. An edge will be added between a point $(x_0, y_0, t_0)$
+and $(x_1, y_1, t_1)$ as long as it is feasible for the robot to move between
+$(x_0, y_0)$ and $(x_1, y_1)$ in $t_1 - t_0$ seconds. The control model for the
+robot will determine the feasibility of moving between two points. A PRM with a
+suitable number of sample points will capture the space-time connectivity of
+the environment.
+
+Using this roadmap, we will be able to assign weights to nodes based on the
+probability of an obstacle being in the same location as the node. The edges
+will be weighted using a combination of the probability of a robot colliding
+with an obstacle if travelling along said edge and the length of the edge.
+Using a shortest path algorithm such as A*, we will be able to generate paths
+in space-time that minimize the length of the path and the probability of
+colliding with an obstacle. The path that is generated will be the initial path
+used by the robot to plan its motions. Since obstacles may move off their
+initial trajectories, the PRM can be used for replanning. Once it is noticed
+that an obstacle has changed its trajectory, the roadmap can be re-weighted,
+and a new shortest path can be generated from the current configuration of the
+robot to the goal configuration.
+
+% \bibliography{writeup} \bibliographystyle{ieeetr}
+
+\end{document}
