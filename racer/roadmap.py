@@ -1,4 +1,8 @@
 
+class PathNotFoundException(Exception):
+    pass
+
+
 class STRoadmap(object):
 
     def __init__(self):
@@ -63,8 +67,60 @@ class STRoadmap(object):
 
         return xs, ys, ts
 
-    def shortest_path(self, n1, n2):
-        return list()
+    def path(self, s_pt, g_pt, radius):
+        assert(s_pt in self.graph.keys())
+
+        closed_set = set()
+        open_set = set([s_pt])
+        came_from = dict()
+        g_score = dict()
+        f_score = dict()
+
+        g_score[s_pt] = 0
+        f_score[s_pt] = s_pt.euclid_dist(g_pt)
+
+        while len(open_set) > 0:
+            current = None
+            min_f_score = None
+            for node in open_set:
+                if current is None or f_score[node] < min_f_score:
+                    current = node
+                    min_f_score = f_score[node]
+
+            print current
+            print g_pt
+            print "================="
+
+            if current.euclid_dist(g_pt) < radius:
+                return self.reconstruct_path(came_from, current)
+
+            open_set.remove(current)
+            closed_set.add(current)
+
+            for neighbour in self.graph[current]:
+                # if neighbour in closed_set:
+                    # continue
+                t_g_score = g_score[current] + current.euclid_dist(neighbour)
+
+                if not neighbour in open_set or t_g_score < g_score[neighbour]:
+                    came_from[neighbour] = current
+                    g_score[neighbour] = t_g_score
+                    goal_dist = neighbour.euclid_dist(g_pt)
+                    f_score[neighbour] = g_score[neighbour] + goal_dist
+
+                    if not neighbour in open_set:
+                        open_set.add(neighbour)
+
+        raise PathNotFoundException()
+
+    def reconstruct_path(self, came_from, current):
+        total_path = [current]
+
+        while current in came_from.keys():
+            current = came_from[current]
+            total_path.append(current)
+
+        return total_path
 
 
 def make():
