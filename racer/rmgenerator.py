@@ -39,7 +39,7 @@ class STRoadmapGenerator(object):
         return dist / t_diff <= self.max_speed
 
     def generate(self):
-        rm = nx.DiGraph()
+        rm = roadmap.make()
         samples = list()
         for i in xrange(self.num_points):
             if len(samples) == 0:
@@ -57,7 +57,8 @@ class STRoadmapGenerator(object):
             for smpl in samples:
                 within_distance = smpl.euclid_dist(sample) <= self.max_dist
                 is_move_possible = self.possible(smpl, sample)
-                if within_distance and is_move_possible:
+                within_time = sample.t - smpl.t <= self.max_time
+                if within_distance and is_move_possible and within_time:
                     rm.add_edge(smpl, sample, weight=smpl.euclid_dist(sample))
 
         return rm
