@@ -4,7 +4,7 @@ __all__ = [
     "model", "get_probability",
     "get_pdf", "Point", "STPoint",
     "STRoadmapGenerator", "STRoadmap",
-    "STRoadmapDrawer"
+    "STRoadmapDrawer", "Animator"
 ]
 
 from agent import Agent
@@ -14,4 +14,5 @@ from stpoint import STPoint
 from rmgenerator import STRoadmapGenerator
 from rmdrawer import STRoadmapDrawer
 from roadmap import STRoadmap
+from animator import Animator
 import model

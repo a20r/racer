@@ -19,12 +19,12 @@ class LiveUncertaintyTests(object):
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
-        self.x_step = 2
-        self.y_step = 2
+        self.x_step = 0.15
+        self.y_step = 0.15
         self.x_min = 0
         self.y_min = 0
-        self.x_max = 50
-        self.y_max = 50
+        self.x_max = 4
+        self.y_max = 4
         self.x = np.arange(self.x_min, self.x_max, self.x_step)
         self.y = np.arange(self.y_min, self.y_max, self.y_step)
         self.X, self.Y = np.meshgrid(self.x, self.y)
@@ -32,10 +32,10 @@ class LiveUncertaintyTests(object):
         self.ax.set_xlim(self.x_min, self.x_max)
         self.ax.set_ylim(self.y_min, self.y_max)
         self.ag = racer.Agent(
-            rm.SinModel(20, 2, 1, 25), rm.LinearModel(0, 35)
+            rm.SinModel(2, 2, 1, 2), rm.LinearModel(0, 1)
         )
         self.ag_2 = racer.Agent(
-            rm.SinModel(-20, 2, 1, 25), rm.LinearModel(0, 15)
+            rm.SinModel(-2, 2, 1, 2), rm.LinearModel(0, 1)
         )
 
         self.num_iter = 1000
@@ -46,12 +46,8 @@ class LiveUncertaintyTests(object):
         self.goal = racer.Point(25, 50)
 
     def get_zs(self):
-        zs = np.array(
-            [
-                self.pdf(x_i, y_i)
-                for x_i, y_i in zip(np.ravel(self.X), np.ravel(self.Y))
-            ]
-        )
+        x_y_zipped = zip(np.ravel(self.X), np.ravel(self.Y))
+        zs = np.array([self.pdf(x_i, y_i) for x_i, y_i in x_y_zipped])
         return zs
 
     def update(self):
