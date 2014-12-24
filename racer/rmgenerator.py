@@ -5,7 +5,7 @@ import stpoint
 import random
 import roadmap
 import agent
-import networkx as nx
+from progress.bar import Bar
 
 
 class STRoadmapGenerator(object):
@@ -52,7 +52,7 @@ class STRoadmapGenerator(object):
         x_slope = (n2.x - n1.x) / self.num_edge_samples
         y_slope = (n2.y - n1.y) / self.num_edge_samples
         cost = 0
-        for i in xrange(self.num_edge_samples):
+        for i in xrange(self.num_edge_samples + 1):
             x = n1.x + i * x_slope
             y = n1.y + i * y_slope
             cost += pdf(x, y)
@@ -62,6 +62,7 @@ class STRoadmapGenerator(object):
     def generate(self):
         rm = roadmap.make()
         samples = list()
+        bar = Bar("Generating Roadmap", max=self.num_points)
         for i in xrange(self.num_points):
             if len(samples) == 0:
                 node = stpoint.make(self.start.x, self.start.y, 0)
@@ -69,7 +70,7 @@ class STRoadmapGenerator(object):
 
             ref = random.choice(samples)
             sample = self.get_sample(ref)
-            rm.add_edge(ref, sample, weight=ref.euclid_dist(sample))
+            rm.add_edge(ref, sample, weight=self.get_cost(ref, sample))
 
             if sample.within(0, self.width, 0, self.height):
                 samples.append(sample)
@@ -86,7 +87,9 @@ class STRoadmapGenerator(object):
                     else:
                         cost = self.get_cost(sample, smpl)
                         rm.add_edge(sample, smpl, weight=cost)
+            bar.next()
 
+        bar.finish()
         return rm
 
 

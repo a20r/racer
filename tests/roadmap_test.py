@@ -7,23 +7,25 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import racer
 
 ag = racer.Agent(
-    racer.model.SinModel(2, 1, 1, 2),
-    racer.model.LinearModel(0, 2)
+    racer.model.SinModel(2, 3, 1, 2),
+    racer.model.LinearModel(0, 3)
 )
 
 ag2 = racer.Agent(
-    racer.model.SinModel(-2, 1, 1, 2),
+    racer.model.SinModel(-2, 3, 1, 2),
     racer.model.LinearModel(0, 1)
 )
 
 
-strg = racer.STRoadmapGenerator(num_points=1000, agents=[ag])
+start = racer.Point(2, 0)
+strg = racer.STRoadmapGenerator(num_points=2000, start=start, agents=[ag, ag2])
 rm = strg.generate()
 rmdr = racer.STRoadmapDrawer(rm)
 
-start = racer.Point(0, 0)
-goal = racer.Point(3.5, 3.5)
-path = rm.get_path(start, 0, goal, 1)
+goal = racer.Point(2, 4)
+goal_rad = 1
+start_rad = 0
+path = rm.get_path(start, start_rad, goal, goal_rad)
 
 # rmdr.draw_nodes()
 rmdr.draw_path(path)
