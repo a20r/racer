@@ -78,13 +78,12 @@ class STRoadmapGenerator(object):
             # makes it a graph
             for smpl in samples:
                 within_distance = smpl.euclid_dist(sample) <= self.max_dist
-                is_move_possible = self.possible(smpl, sample)
                 within_time = abs(sample.t - smpl.t) <= self.max_time
-                if within_distance and is_move_possible and within_time:
-                    if smpl.t < sample.t:
+                if within_distance and within_time:
+                    if smpl.t < sample.t and self.possible(smpl, sample):
                         cost = self.get_cost(smpl, sample)
                         rm.add_edge(smpl, sample, weight=cost)
-                    else:
+                    elif smpl.t > sample.t and self.possible(sample, smpl):
                         cost = self.get_cost(sample, smpl)
                         rm.add_edge(sample, smpl, weight=cost)
             bar.next()

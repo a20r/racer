@@ -18,7 +18,7 @@ ag2 = racer.Agent(
 
 
 start = racer.Point(2, 0)
-strg = racer.STRoadmapGenerator(num_points=2000, start=start, agents=[ag, ag2])
+strg = racer.STRoadmapGenerator(num_points=1000, start=start, agents=[ag, ag2])
 rm = strg.generate()
 rmdr = racer.STRoadmapDrawer(rm)
 

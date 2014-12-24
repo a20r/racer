@@ -1,0 +1,192 @@
+
+\title{Formalization of Methods}
+
+\date{\today}
+
+\author{Alex Wallar}
+
+\documentclass{article}
+
+\usepackage{amsfonts}
+
+\usepackage{amsmath}
+
+\usepackage[pdftex]{graphicx}
+
+\usepackage{relsize}
+
+\usepackage[margin=1.4in]{geometry}
+
+\usepackage{float}
+
+\usepackage{fancyvrb}
+
+\usepackage{algorithm}
+
+\usepackage[noend]{algorithmic}
+
+\floatstyle{ruled} \newfloat{program}{thp}{lop} \floatname{program}{Structure}
+
+\newcommand{\Normal}[2]{\mathcal{N}_k(#1, #2)}
+
+\newcommand{\Acronym}[1]{\ensuremath{{\small{\texttt{#1}}}}}
+\newcommand{\Constant}[1]{\ensuremath{\small{\texttt{#1}}}}
+\newcommand{\Rover}{\Acronym{Rover}}
+\newcommand{\Keeper}{\Acronym{Keeper}}
+\newcommand{\False}{\Constant{false}}
+\newcommand{\True}{\Constant{true}}
+\newcommand{\Symbol}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\Function}[1]{\ensuremath{{\small \textsc{#1}}}}
+\newcommand{\Var}[1]{\ensuremath{{\small{\textsl{#1}}}}}
+\newcommand{\argmax}[1]{\underset{#1}{\operatorname{arg}\,\operatorname{max}}\;}
+\newcommand{\Max}[1]{\underset{#1}{\operatorname{max}}\;}
+\newcommand{\grad}[1]{\underset{#1}{\operatorname{\Function{GradientDecent}}}\;}
+\newcommand{\s}{\textbf{s}}
+\newcommand{\fig}[1]{\textbf{Fig.~\ref{fig:#1}}}
+
+\newcommand{\n}[2]{\ensuremath{n^{(#2)}_{#1}}}
+
+\newcommand{\PA}{\ensuremath{P^{(\n{i}{t},\;\n{j}{t})}_{A}}}
+\newcommand{\PD}{\ensuremath{P^{(t_0,\;t_m)}_{a}}}
+\newcommand{\PAll}{\ensuremath{P^{(t_0,\;t_m)}_{A}}}
+
+\begin{document}
+
+\maketitle
+
+\section{Temporal Probabilistic Roadmap}
+
+\paragraph{Construction} A temporal probabilistic roadmap (tPRM) is similar to
+other probabilistic roadmaps but instead of just representing the configuration
+space of the robot, a tPRM also incorporates the time at which the robot would
+be at that configuration. For instance, in a two dimensional setting, the nodes
+of the tPRM would be of the form $(x, y, t)$ where $t$ is the time at which the
+robot would be at $(x, y)$. The addition of time into the tradition approach
+allows more constraints to be set on the construction of the roadmap that
+include time. The tPRM is represented by a weighted directed graph, $(V, E,
+W)$, such that an edge can only exist from $n_i$ to $n_j$ if $\n{i}{t} <
+\n{j}{t}$ along with other constraints set during the construction.  The
+temporal probabilistic roadmap is constructed by sampling random points within
+the search space and connecting nodes that are feasible for the robot to move
+between.  More formally, an edge exists between $n_i$ and $n_j$ if $F_R(n_i,
+n_j) = 1$ where the function, $F_R: V \times V \to \{0, 1\}$ represents whether
+or not it is feasible to move between two vertices in the roadmap for a given
+robot model, $R$.  Other than the feasibility constraint for an edge between
+two nodes, there are also constraints that limit the size of edges. We assume
+that there is a maximum time $T_m > 0$ such that if $(n_i, n_j) \in E$, then
+$\n{j}{t} - \n{i}{t} \leq T_m$. Likewise, we assume that there is a maximum
+distance that can exist between nodes, $D_m > 0$, such that if $(n_i, n_j) \in
+E$, then $\Var{dist}(n_i, n_j) \leq D_m$ where $\Var{dist}(n_i, n_j)$ is the
+distance between $n_i$ and $n_j$ in Euclidean space. Algo.~\ref{algo:tprm}
+shows pseudocode for the construction of the tPRM.
+
+\paragraph{Search} In order to get a set of sub-goals that can be used to lead
+the robot to the goal, a graph search algorithm is used. The current
+implementation uses Dijkstra's shortest path algorithm because it is provided
+in the \verb|NetworkX| graph library by default. Given the constructed roadmap,
+the algorithm is used to find the shortest path in the directed graph from the
+robot's initial configuration to it's goal configuration.
+
+\begin{algorithm}[ht]
+
+\caption{Pseudocode for tPRM construction}
+
+\label{algo:tprm}
+
+\begin{algorithmic}[1]
+
+\setcounter{ALC@line}{0}
+
+\vspace*{1mm}
+
+\STATE $G \leftarrow \Function{InitDirectedGraph}()$
+
+\STATE $S \leftarrow \{\Var{start}\}, i \leftarrow 0$
+
+\WHILE{$i < \Var{MaxPoints}$}
+
+\STATE $i \leftarrow i + 1$
+
+\STATE $\rho \leftarrow \Function{RandomChoice}(S)$
+
+\STATE $\sigma \leftarrow \Function{Sample}(\rho, F_R)$
+
+\IF{$\Function{WithinSearchSpace}(\sigma)$}
+
+\STATE $S \leftarrow S \cup \{\sigma\}$
+
+\ENDIF
+
+\FORALL{$s \in S$}
+
+\IF{$\Var{dist}(s, \sigma) \leq D_m \wedge |\sigma^{(t)} - s^{(t)}| \leq
+T_m$}
+
+\IF{$s^{(t)} < \sigma^{(t)} \wedge F_R(s, \sigma) = 1$}
+
+\STATE $\Function{AddEdge}(G, s, \sigma, P^{(s^{(t)},\;\sigma^{(t)})}_{A}(s,
+\sigma))$
+
+\ENDIF
+
+\IF{$s^{(t)} > \sigma^{(t)} \wedge F_R(\sigma, s) = 1$}
+
+\STATE $\Function{AddEdge}(G, \sigma, s, P^{(\sigma^{(t)},\;\s^{(t)})}_{A}(
+\sigma, s))$
+
+\ENDIF
+
+\ENDIF
+
+\ENDFOR
+
+\ENDWHILE
+
+\RETURN $G$
+
+\end{algorithmic}
+\end{algorithm}
+
+\section{Agent Position Probability Distribution}
+
+For a given set of agents, $A$, in the environment and their associated
+trajectories, $\{\zeta_a : a \in A\}$, where $\zeta_a: \mathbb{R} \to
+\mathbb{R}^k$, the probability of an agent being given position is represented
+between a given time interval is given by the function, $\PD: \mathbb{R}^k \to
+(0, 1)$, where $k$ is the dimension of the search space. $\PD$ is defined as,
+
+$$\PD(\mathbf{x}^k) = \mathlarger{\int_{t_0}^{t_m}}\Normal{\zeta_a(t)}{(t_m -
+t)^2 \cdot \alpha}(\mathbf{x}^k)dt$$
+
+Where $\mathbf{x}^k$ represents the $k$-dimensional input vector, $\alpha$ is a
+scaling constant, and $\mathcal{N}_k(\mu, \sigma^2)$ is a $k$-dimensional
+Gaussian distribution centered at $\mu$ with a variance $\sigma^2$. For all of
+the agents, the probability density function becomes
+
+$$\PAll(\mathbf{x}^k) = \frac{\mathlarger{\sum_{a \in A}}
+\PD(\mathbf{x}^k)}{|A|}$$
+
+\section{Edge Weights}
+
+For two nodes, $n_i$ and $n_j$, in the temporal probabilistic roadmap (tPRM),
+where $\n{i}{t} < \n{j}{t}$, where $n^{(t)}$ represents the time at which robot
+would be at node $n$, the weight of the edge between those two nodes is,
+
+$$w_N(n_i, n_j) = \gamma \cdot \frac{\mathlarger{\sum^{N}_{i = 0}}(\PA \circ
+E)(\n{i}{t} + i \cdot \frac{\n{j}{t} - \n{i}{t}}{N})}{N}$$
+
+Where $E(t)$ is a function, $E: \mathbb{R} \to \mathbb{R}^k$, that represents
+the position along the edge between $n_i$ and $n_j$ given a time, $t
+\in (\n{i}{t},\;\n{j}{t}]$ and $k$ is the dimension of the search space. In the
+equation, $N$ is the number of samples along the edge, $\circ$ represents the
+function composition, and $\gamma$ is a scaling constant.  As the number of
+samples tends towards infinity (i.e.  $\lim_{N \to
+\infty} w_N(n_i, n_j)$), the weight becomes,
+
+\begin{align*}
+    w(n_i, n_j) &= \lim_{N \to \infty} w_N(n_i, n_j) \\
+                &= \gamma \cdot \mathlarger{\int_{\n{i}{t}}^{\n{j}{t}}}(\PA
+\circ E)(t)dt
+\end{align*}
+
+\end{document}
