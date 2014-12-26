@@ -17,3 +17,7 @@ class Path(list):
                 x_pos = self[i - 1].x + rel_t * x_vel
                 y_pos = self[i - 1].y + rel_t * y_vel
                 return point.Point(x_pos, y_pos)
+
+
+def make(*args):
+    return Path(*args)

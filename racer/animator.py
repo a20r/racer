@@ -1,6 +1,5 @@
 
 import matplotlib.pyplot as plt
-import point
 
 
 class Animator(object):
@@ -16,33 +15,17 @@ class Animator(object):
         self.agent_plots = [plt.scatter([], []) for _ in agents]
         self.pln_plot = plt.scatter([], [])
 
-    def get_planner_position(self, t):
-        for i, p in enumerate(self.path):
-            if i == 0:
-                continue
-
-            if t <= p.get_t():
-                t_diff = p.t - self.path[i - 1].t
-                rel_t = float(t) - self.path[i - 1].t
-                x_vel = (p.x - self.path[i - 1].x) / t_diff
-                y_vel = (p.y - self.path[i - 1].y) / t_diff
-                x_pos = self.path[i - 1].x + rel_t * x_vel
-                y_pos = self.path[i - 1].y + rel_t * y_vel
-                return point.Point(x_pos, y_pos)
-
     def update(self, t):
-        pln_pos = self.get_planner_position(t)
+        pln_pos = self.path(t)
         self.pln_plot.remove()
-        self.pln_plot = plt.scatter([pln_pos.x], [pln_pos.y],
-                                    marker="o", color="b",
-                                    s=40)
+        self.pln_plot = plt.scatter(
+            [pln_pos.x], [pln_pos.y], marker="o", color="b", s=40)
 
         for i, ag in enumerate(self.agents):
             ag_pos = ag.get_position(t)
             self.agent_plots[i].remove()
-            self.agent_plots[i] = plt.scatter([ag_pos.x], [ag_pos.y],
-                                              marker="^", color="r",
-                                              s=40)
+            self.agent_plots[i] = plt.scatter(
+                [ag_pos.x], [ag_pos.y], marker="^", color="r", s=40)
 
         plt.draw()
         plt.pause(0.01)
