@@ -61,9 +61,7 @@ class STRoadmapGenerator(object):
             if cost > max_cost:
                 max_cost = cost
 
-        # if cost > 1:
-            # print cost
-        # inv_cost = self.cos\t_scal / (1 - max_cost)
+        # inv_cost = self.cost_scal / (1 - max_cost)
         # return self.cost_w * inv_cost + self.dist_w * dist
         return self.cost_w * max_cost + self.dist_w * dist
 

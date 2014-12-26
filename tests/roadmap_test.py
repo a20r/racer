@@ -12,7 +12,7 @@ ag = racer.Agent(
 )
 
 ag2 = racer.Agent(
-    racer.model.SinModel(-2, 3, 1, 2),
+    racer.model.SinModel(-2, 4, 1, 2),
     racer.model.LinearModel(0, 1)
 )
 
