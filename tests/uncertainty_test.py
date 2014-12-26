@@ -19,11 +19,11 @@ class LiveUncertaintyTests(object):
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
-        self.x_step = 0.15
-        self.y_step = 0.15
-        self.x_min = 0
+        self.x_step = 0.1
+        self.y_step = 0.1
+        self.x_min = -1
         self.y_min = 0
-        self.x_max = 4
+        self.x_max = 5
         self.y_max = 4
         self.x = np.arange(self.x_min, self.x_max, self.x_step)
         self.y = np.arange(self.y_min, self.y_max, self.y_step)
@@ -35,7 +35,7 @@ class LiveUncertaintyTests(object):
             rm.SinModel(2, 2, 1, 2), rm.LinearModel(0, 1)
         )
         self.ag_2 = racer.Agent(
-            rm.SinModel(-2, 2, 1, 2), rm.LinearModel(0, 1)
+            rm.SinModel(-2, 2, 1, 2), rm.LinearModel(0, 3)
         )
 
         self.num_iter = 1000

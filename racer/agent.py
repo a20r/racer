@@ -9,11 +9,11 @@ class Agent(object):
         self.model_x = model_x
         self.model_y = model_y
         self.delta_t = 0.1
-        self.k = 10
+        self.k = 0.6
 
     def get_normal_dist(self, X, std):
         coeff = 1.0 / (std * math.sqrt(2 * math.pi))
-        return coeff * math.exp(- math.pow(X, 2) / (2.0 * math.pow(std, 2)))
+        return coeff * math.exp(-1 * pow(X, 2) / (2.0 * pow(std, 2)))
 
     def get_position(self, t_0):
         return point.Point(self.model_x(t_0), self.model_y(t_0))
@@ -23,12 +23,15 @@ class Agent(object):
         assert t_0 < t_m
         t = t_0
         prob_sum = 0.0
-        num_samples = (t_m - t_0) / self.delta_t
+        num_samples = 0
 
-        while t < t_m:
+        while t <= t_m:
+            num_samples += 1
             pos = self.get_position(t)
             dist = pos.dist_to(point.Point(x, y))
-            prob = self.get_normal_dist(dist, self.k * (t - t_0) + 1)
+            prob = self.get_normal_dist(dist, self.k * (t - t_0) + 0.001)
+            # if prob > 1:
+                # print prob
             prob_sum += prob
             t += self.delta_t
 

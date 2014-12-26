@@ -172,21 +172,13 @@ For two nodes, $n_i$ and $n_j$, in the temporal probabilistic roadmap (tPRM),
 where $\n{i}{t} < \n{j}{t}$, where $n^{(t)}$ represents the time at which robot
 would be at node $n$, the weight of the edge between those two nodes is,
 
-$$w_N(n_i, n_j) = \gamma \cdot \frac{\mathlarger{\sum^{N}_{i = 0}}(\PA \circ
-E)(\n{i}{t} + i \cdot \frac{\n{j}{t} - \n{i}{t}}{N})}{N}$$
+$$w(n_i, n_j) = \gamma \cdot \mathlarger{\max_{t \in [\n{i}{t},
+    \n{j}{t}]}}(\PA \circ E)(t)$$
 
 Where $E(t)$ is a function, $E: \mathbb{R} \to \mathbb{R}^k$, that represents
 the position along the edge between $n_i$ and $n_j$ given a time, $t
-\in (\n{i}{t},\;\n{j}{t}]$ and $k$ is the dimension of the search space. In the
-equation, $N$ is the number of samples along the edge, $\circ$ represents the
-function composition, and $\gamma$ is a scaling constant.  As the number of
-samples tends towards infinity (i.e.  $\lim_{N \to
-\infty} w_N(n_i, n_j)$), the weight becomes,
-
-\begin{align*}
-    w(n_i, n_j) &= \lim_{N \to \infty} w_N(n_i, n_j) \\
-                &= \gamma \cdot \mathlarger{\int_{\n{i}{t}}^{\n{j}{t}}}(\PA
-\circ E)(t)dt
-\end{align*}
+\in [\n{i}{t},\;\n{j}{t}]$ and $k$ is the dimension of the search space. In the
+equation, $\circ$ represents the function composition, and $\gamma$ is a
+scaling constant.
 
 \end{document}

@@ -5,6 +5,7 @@ import stpoint
 import random
 import roadmap
 import agent
+import grid
 from progress.bar import Bar
 
 
@@ -19,9 +20,10 @@ class STRoadmapGenerator(object):
         self.agents = kwargs.get("agents", list())
         self.max_time = 1
         self.max_dist = 1
-        self.num_edge_samples = 15
+        self.num_edge_samples = 10
         self.dist_w = 0.0
         self.cost_w = 1
+        self.cost_scal = 100
 
     def get_start(self):
         return stpoint.make(self.start.x, self.start.y, 0)
@@ -51,32 +53,38 @@ class STRoadmapGenerator(object):
         pdf = agent.get_pdf(n1.t, n2.t, *self.agents)
         x_slope = (n2.x - n1.x) / self.num_edge_samples
         y_slope = (n2.y - n1.y) / self.num_edge_samples
-        cost = 0
+        max_cost = 0
         for i in xrange(self.num_edge_samples + 1):
             x = n1.x + i * x_slope
             y = n1.y + i * y_slope
-            cost += pdf(x, y)
+            cost = pdf(x, y)
+            if cost > max_cost:
+                max_cost = cost
 
-        return self.cost_w * cost + self.dist_w * dist
+        # if cost > 1:
+            # print cost
+        # inv_cost = self.cos\t_scal / (1 - max_cost)
+        # return self.cost_w * inv_cost + self.dist_w * dist
+        return self.cost_w * max_cost + self.dist_w * dist
 
     def generate(self):
         rm = roadmap.make()
+        gd = grid.make(7, 7, 5, 5)
         samples = list()
+        node = stpoint.make(self.start.x, self.start.y, 0)
+        gd.insert(node)
+        samples.append(node)
         bar = Bar("Generating Roadmap", max=self.num_points)
         for i in xrange(self.num_points):
-            if len(samples) == 0:
-                node = stpoint.make(self.start.x, self.start.y, 0)
-                samples.append(node)
-
             ref = random.choice(samples)
             sample = self.get_sample(ref)
-            rm.add_edge(ref, sample, weight=self.get_cost(ref, sample))
 
             if sample.within(0, self.width, 0, self.height):
                 samples.append(sample)
+                gd.insert(sample)
 
             # makes it a graph
-            for smpl in samples:
+            for smpl in gd.get_nearest(sample):
                 within_distance = smpl.euclid_dist(sample) <= self.max_dist
                 within_time = abs(sample.t - smpl.t) <= self.max_time
                 if within_distance and within_time:
