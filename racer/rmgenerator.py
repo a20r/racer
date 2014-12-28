@@ -24,6 +24,7 @@ class STRoadmapGenerator(object):
         self.dist_w = 0.0
         self.cost_w = 1
         self.cost_scal = 10
+        self.cost_rad = 0.01
 
     def get_start(self):
         return stpoint.make(self.start.x, self.start.y, 0)
@@ -46,14 +47,11 @@ class STRoadmapGenerator(object):
         return dist / t_diff <= self.max_speed
 
     def get_cost(self, n1, n2):
-        dist = n1.euclid_dist(n2)
-        if len(self.agents) == 0:
-            return dist
-
+        max_cost = 0
         pdf = agent.get_pdf(n1.t, n2.t, *self.agents)
         x_slope = (n2.x - n1.x) / self.num_edge_samples
         y_slope = (n2.y - n1.y) / self.num_edge_samples
-        max_cost = 0
+
         for i in xrange(self.num_edge_samples + 1):
             x = n1.x + i * x_slope
             y = n1.y + i * y_slope
