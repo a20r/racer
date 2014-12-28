@@ -31,7 +31,7 @@ class Agent(object):
             pos = self.get_position(t)
             dist = pos.dist_to(point.Point(x, y))
             prob = self.get_normal_dist(dist, self.k * (t - t_0) + 0.1)
-            prob_sum += math.pow(t_m - t, self.r) * prob
+            prob_sum += math.pow(t_m - t + 1, self.r) * prob
             t += self.delta_t
 
         return prob_sum / num_samples

@@ -4,6 +4,9 @@ import point
 
 class Path(list):
 
+    def get_max_time(self):
+        return self[-1].t
+
     def __call__(self, t):
         for i, p in enumerate(self):
             if i == 0:

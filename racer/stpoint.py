@@ -63,9 +63,9 @@ class STPoint(object):
 
     @util.check_attrs(["x", "y", "t"])
     def __eq__(self, other):
-        eq_x = self.x == other.x
-        eq_y = self.y == other.y
-        eq_t = self.t == other.t
+        eq_x = abs(self.x - other.x) < 0.0001
+        eq_y = abs(self.y - other.y) < 0.0001
+        eq_t = abs(self.t - other.t) < 0.0001
         return eq_x and eq_y and eq_t
 
 

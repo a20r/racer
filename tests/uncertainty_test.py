@@ -19,8 +19,8 @@ class LiveUncertaintyTests(object):
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
-        self.x_step = 0.05
-        self.y_step = 0.05
+        self.x_step = 0.1
+        self.y_step = 0.1
         self.x_min = -1
         self.y_min = 0
         self.x_max = 5

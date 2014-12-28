@@ -27,10 +27,10 @@ goal_rad = 1
 start_rad = 0
 path = rm.get_path(start, start_rad, goal, goal_rad)
 
-# rmdr.draw_nodes()
+rmdr.draw_nodes()
 rmdr.draw_path(path)
-rmdr.draw_agent(ag, path[-1].t)
-rmdr.draw_agent(ag2, path[-1].t)
+rmdr.draw_agent(ag, path.get_max_time())
+rmdr.draw_agent(ag2, path.get_max_time())
 rmdr.show()
 
 anmtr = racer.Animator(path, ag, ag2)

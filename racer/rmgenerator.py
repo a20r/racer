@@ -23,7 +23,7 @@ class STRoadmapGenerator(object):
         self.num_edge_samples = 10
         self.dist_w = 0.0
         self.cost_w = 1
-        self.cost_scal = 100
+        self.cost_scal = 10
 
     def get_start(self):
         return stpoint.make(self.start.x, self.start.y, 0)
@@ -61,21 +61,22 @@ class STRoadmapGenerator(object):
             if cost > max_cost:
                 max_cost = cost
 
-        # inv_cost = self.cost_scal / (1 - max_cost)
-        # return self.cost_w * inv_cost + self.dist_w * dist
-        return self.cost_w * max_cost + self.dist_w * dist
+        ret_cost = self.cost_scal * max_cost
+        return ret_cost
 
     def generate(self):
         rm = roadmap.make()
-        gd = grid.make(7, 7, 5, 5)
+        gd = grid.make(5, 5, 5, 5)
         samples = list()
         node = stpoint.make(self.start.x, self.start.y, 0)
+        rm.add_edge(node, node, weight=0)
         gd.insert(node)
         samples.append(node)
         bar = Bar("Generating Roadmap", max=self.num_points)
         for i in xrange(self.num_points):
             ref = random.choice(samples)
             sample = self.get_sample(ref)
+            rm.add_edge(ref, sample, weight=self.get_cost(ref, sample))
 
             if sample.within(0, self.width, 0, self.height):
                 samples.append(sample)
@@ -83,6 +84,9 @@ class STRoadmapGenerator(object):
 
             # makes it a graph
             for smpl in gd.get_nearest(sample):
+                if smpl == sample:
+                    continue
+
                 within_distance = smpl.euclid_dist(sample) <= self.max_dist
                 within_time = abs(sample.t - smpl.t) <= self.max_time
                 if within_distance and within_time:
