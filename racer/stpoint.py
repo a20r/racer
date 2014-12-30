@@ -2,6 +2,7 @@
 import math
 import util
 import random
+import point
 
 
 class STPoint(object):
@@ -24,6 +25,9 @@ class STPoint(object):
         x_in = self.x >= x_min and self.x < x_max
         y_in = self.y >= y_min and self.y < y_max
         return x_in and y_in
+
+    def to_point(self):
+        return point.make(self.x, self.y)
 
     @util.check_attrs(["x", "y"])
     def euclid_dist(self, other):

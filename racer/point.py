@@ -1,5 +1,6 @@
 
 import math
+import stpoint
 import random
 
 
@@ -45,6 +46,9 @@ class Point(object):
             return Point(0, 0, 0)
         else:
             return Point(self.x / mag, self.y / mag, self.z / mag)
+
+    def to_st_point_2d(self, t):
+        return stpoint.make(self.x, self.y, t)
 
     def to_list(self):
         return [self.x, self.y, self.z]

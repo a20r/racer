@@ -13,17 +13,14 @@ class RoadmapGenerator(object):
     def __init__(self, **kwargs):
         self.width = kwargs.get("width", 100)
         self.height = kwargs.get("height", 100)
-        self.num_points = kwargs.get("num_points", 1000)
         self.start = kwargs.get("start", point.make(0, 0))
         self.max_dist = kwargs.get("max_dist", 5)
 
-    def generate(self):
-        rm = roadmap.make()
-        gd = grid.make(5, 5, 5, 5)
+    def resample(self, rm, gd, num_points):
         node = point.make(self.start.x, self.start.y)
         gd.insert(node)
-        bar = Bar("Generating Roadmap", max=self.num_points)
-        for i in xrange(self.num_points):
+        bar = Bar("Generating Roadmap", max=num_points)
+        for i in xrange(num_points):
             sample = point.get_random_point(self.width, self.height)
             gd.insert(sample)
 
@@ -35,7 +32,12 @@ class RoadmapGenerator(object):
 
             bar.next()
         bar.finish()
-        return rm
+        return rm, gd
+
+    def generate(self, num_points):
+        rm = roadmap.make()
+        gd = grid.make(self.width, self.height, self.width, self.height)
+        return self.resample(rm, gd, num_points)
 
 
 def make(**kwargs):

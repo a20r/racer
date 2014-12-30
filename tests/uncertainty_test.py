@@ -32,10 +32,10 @@ class LiveUncertaintyTests(object):
         self.ax.set_xlim(self.x_min, self.x_max)
         self.ax.set_ylim(self.y_min, self.y_max)
         self.ag = racer.Agent(
-            rm.SinModel(2, 4, 1, 2), rm.LinearModel(0, 1)
+            rm.SinModel(2, 2, 1, 2), rm.LinearModel(0, 1)
         )
         self.ag_2 = racer.Agent(
-            rm.SinModel(-2, 3, 1, 2), rm.LinearModel(0, 3)
+            rm.SinModel(-2, 2, 1, 2), rm.LinearModel(0, 3)
         )
 
         self.num_iter = 1000
