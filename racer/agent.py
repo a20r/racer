@@ -8,7 +8,7 @@ class Agent(object):
     def __init__(self, model_x, model_y):
         self.model_x = model_x
         self.model_y = model_y
-        self.delta_t = 0.08
+        self.delta_t = 0.01
         self.r = 1.5
         self.k = 1.0
 

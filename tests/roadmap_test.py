@@ -18,20 +18,23 @@ ag2 = racer.Agent(
 
 
 start = racer.Point(2, 0)
-strg = racer.STRoadmapGenerator(num_points=1000, start=start, agents=[ag, ag2])
+strg = racer.RoadmapGenerator(
+    num_points=1000, start=start, width=5, height=5, max_dist=1
+)
 rm = strg.generate()
-rmdr = racer.STRoadmapDrawer(rm)
+dr = racer.Drawer()
 
-goal = racer.Point(2, 4)
-goal_rad = 1
-start_rad = 0
-path = rm.get_path(start, start_rad, goal, goal_rad)
+# goal = racer.Point(2, 4)
+# goal_rad = 1
+# start_rad = 0
+# path = rm.get_path(start, start_rad, goal, goal_rad)
 
-rmdr.draw_nodes()
-rmdr.draw_path(path)
-rmdr.draw_agent(ag, path.get_max_time())
-rmdr.draw_agent(ag2, path.get_max_time())
-rmdr.show()
+# dr.draw_edges(rm)
+dr.draw_nodes(rm)
+# dr.draw_path(path)
+# dr.draw_agent(ag, path.get_max_time())
+# dr.draw_agent(ag2, path.get_max_time())
+dr.show()
 
-anmtr = racer.Animator(path, ag, ag2)
-anmtr.run()
+# anmtr = racer.Animator(path, ag, ag2)
+# anmtr.run()
