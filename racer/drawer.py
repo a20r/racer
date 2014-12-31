@@ -10,10 +10,10 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Drawer(object):
 
-    def __init__(self):
+    def __init__(self, fig, ax):
         warnings.filterwarnings("ignore")
-        self.fig = plt.figure()
-        self.ax = self.fig.add_subplot(111, projection="3d")
+        self.fig = fig
+        self.ax = ax
 
     def clear(self):
         self.fig = plt.figure()
@@ -40,13 +40,20 @@ class Drawer(object):
 
         return xs, ys
 
+    def draw_temporal_nodes(self, rm):
+        xs, ys, ts = self.get_xs_ys_ts(rm.nodes())
+        self.ax.scatter(xs, ys, ts, alpha=0.5)
+        return self
+
     def draw_nodes(self, rm):
         xs, ys = self.get_xs_ys(rm.nodes())
         self.ax.scatter(xs, ys, alpha=0.5)
+        return self
 
     def draw_edges(self, rm):
         for s_n, e_n in rm.edges():
             self.ax.plot([s_n.x, e_n.x], [s_n.y, e_n.y])
+        return self
 
     def draw_path(self, path):
         xs, ys, ts = self.get_xs_ys_ts(path)
@@ -54,6 +61,7 @@ class Drawer(object):
             e_n = path[i + 1]
             self.ax.plot([s_n.x, e_n.x], [s_n.y, e_n.y], [s_n.t, e_n.t],
                          "r", linewidth=2)
+        return self
 
     def draw_agent(self, ag, t_m):
         num_samples = 20
@@ -69,12 +77,14 @@ class Drawer(object):
             ts.append(t)
 
         self.ax.plot(xs, ys, ts, "y", linewidth=2)
+        return self
 
     def show(self):
         self.ax.set_xlabel("X [meters]")
         self.ax.set_ylabel("Y [meters]")
         self.ax.set_zlabel("Time [seconds]")
         plt.show()
+        return self
 
 
 def make(rm):
