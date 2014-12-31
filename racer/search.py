@@ -16,10 +16,10 @@ class NoPathFoundException(Exception):
 
 class Search(object):
 
-    REPEAT_COST_SCAL = 0.01
+    REPEAT_COST_SCAL = 0.1
     NUM_EDGE_SAMPLES = 10
     COST_SCAL = 10
-    SMALL_VALUE = 0.3
+    GOAL_RADIUS = 1
 
     def __init__(self, rm, speed, wait_time):
         self.rm = rm
@@ -65,7 +65,7 @@ class Search(object):
 
         while len(open_set) > 0:
             _, current = heapq.heappop(open_set)
-            if current.to_point().dist_to(e_pt) < self.SMALL_VALUE:
+            if current.to_point().dist_to(e_pt) < self.GOAL_RADIUS:
                 ret_path = self.backtrack_path(parents, current)
                 return path.make(ret_path), tree
 

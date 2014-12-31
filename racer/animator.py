@@ -16,6 +16,8 @@ class Animator(object):
         self.agents = agents
         self.agent_plots = [self.ax.scatter([], []) for _ in agents]
         self.pln_plot = self.ax.scatter([], [])
+        self.goal_x = path[-1].x
+        self.goal_y = path[-1].y
 
     def update(self, t):
         pln_pos = self.path(t)
@@ -36,6 +38,8 @@ class Animator(object):
         time_step = 0.05
         t = 0
         i = 0
+        self.ax.scatter(
+            [self.goal_x], [self.goal_y], marker="o", color="g", s=200)
         while t < self.path[-1].t:
             self.update(t)
             plt.savefig("sandbox/figs/%05d.png" % i)
