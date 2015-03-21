@@ -28,14 +28,13 @@ class Search(object):
 
     def get_cost(self, n1, n2, *agents):
         max_cost = 0
-        pdf = agent.get_pdf(n1.t, n2.t, *agents)
         x_slope = (n2.x - n1.x) / self.NUM_EDGE_SAMPLES
         y_slope = (n2.y - n1.y) / self.NUM_EDGE_SAMPLES
 
         for i in xrange(self.NUM_EDGE_SAMPLES + 1):
             x = n1.x + i * x_slope
             y = n1.y + i * y_slope
-            cost = pdf(x, y)
+            cost = agent.get_probability(x, y, n1.t, n2.t, *agents)
             if cost > max_cost:
                 max_cost = cost
 

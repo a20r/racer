@@ -22,28 +22,32 @@ ag = racer.Agent(
 
 ag2 = racer.Agent(
     racer.model.SinModel(-2, 2, 1, 2),
-    racer.model.LinearModel(0, 1.5))
+    racer.model.LinearModel(0, 1.3))
 
 ag3 = racer.Agent(
     racer.model.SinModel(2, 2.5, 1, 2),
-    racer.model.LinearModel(0, 2))
+    racer.model.LinearModel(0, 1.8))
 
 ag4 = racer.Agent(
     racer.model.SinModel(-2, 3, 1, 2),
-    racer.model.LinearModel(0, 2.5))
+    racer.model.LinearModel(0, 2.1))
 
 ag5 = racer.Agent(
     racer.model.SinModel(2, 5, 1, 2),
+    racer.model.LinearModel(0, 2.5))
+
+ag6 = racer.Agent(
+    racer.model.SinModel(-2, 4, 1, 2),
     racer.model.LinearModel(0, 3))
 
 strg = racer.RoadmapGenerator(
-    start=start, width=4, height=4, max_dist=0.5)
+    start=start, width=4, height=4, max_dist=0.3)
 
 rm = strg.generate(500)
 search = racer.Search(rm, speed, wait_time)
-path, tree = search.get_path(start, goal, ag, ag2, ag3, ag4, ag5)
+path, tree = search.get_path(start, goal, ag, ag2, ag3, ag4, ag5, ag6)
 # dr = racer.Drawer(fig, ax_dr)
-anmtr = racer.Animator(fig, ax_an, path, ag, ag2, ag3, ag4, ag5)
+# anmtr = racer.Animator(fig, ax_an, path, ag, ag2, ag3, ag4, ag5, ag6)
 
 # dr.draw_edges(rm)
 # dr.draw_nodes(rm)
@@ -52,4 +56,4 @@ anmtr = racer.Animator(fig, ax_an, path, ag, ag2, ag3, ag4, ag5)
 # dr.draw_agent(ag, path.get_max_time())
 # dr.draw_agent(ag2, path.get_max_time())
 # dr.show()
-anmtr.run()
+# anmtr.run()

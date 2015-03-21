@@ -5,13 +5,15 @@ import warnings
 
 class Animator(object):
 
-    def __init__(self, fig, ax, path, *agents):
+    def __init__(self, fig, ax, path, *agents, **kwargs):
         warnings.filterwarnings("ignore")
         plt.ion()
         self.fig = fig
         self.ax = ax
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
+        self.ax.set_xlim(kwargs.get("x_min", -1), kwargs.get("x_max", 5))
+        self.ax.set_ylim(kwargs.get("y_min", -1), kwargs.get("y_max", 5))
         self.path = path
         self.agents = agents
         self.agent_plots = [self.ax.scatter([], []) for _ in agents]
