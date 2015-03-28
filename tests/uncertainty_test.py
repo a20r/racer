@@ -19,8 +19,8 @@ class LiveUncertaintyTests(object):
         self.ax = self.fig.add_subplot(111)
         self.ax.set_xlabel("X Location")
         self.ax.set_ylabel("Y Location")
-        self.x_step = 0.1
-        self.y_step = 0.1
+        self.x_step = 0.05
+        self.y_step = 0.05
         self.x_min = -1
         self.y_min = 0
         self.x_max = 5
@@ -44,6 +44,7 @@ class LiveUncertaintyTests(object):
         self.start_time = time.time()
         self.start = racer.Point(25, 0)
         self.goal = racer.Point(25, 50)
+        self.counter = 0
 
     def get_zs(self):
         x_y_zipped = zip(np.ravel(self.X), np.ravel(self.Y))
@@ -58,8 +59,13 @@ class LiveUncertaintyTests(object):
 
         zs = self.get_zs()
         Z = zs.reshape(self.X.shape)
-        self.graph = self.ax.pcolormesh(self.X, self.Y, Z, cmap=cm.jet)
+        self.graph = self.ax.pcolormesh(self.X, self.Y, Z, cmap=cm.jet,
+                                        shading="gouraud")
+        plt.axis('off')
         plt.draw()
+        plt.savefig("figs/agent_{}.pdf".format(self.counter),
+                    bbox_inches="tight")
+        self.counter += 1
         plt.pause(0.0000001)
 
     def run(self):

@@ -19,7 +19,7 @@ class Search(object):
     REPEAT_COST_SCAL = 0.1
     NUM_EDGE_SAMPLES = 10
     COST_SCAL = 10
-    GOAL_RADIUS = 1
+    GOAL_RADIUS = 0.5
 
     def __init__(self, rm, speed, wait_time):
         self.rm = rm
